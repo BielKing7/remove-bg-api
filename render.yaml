@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: remove-bg-api
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn app:app --timeout 120 --workers 1"
+    envVars:
+      - key: API_KEY
+        sync: false
+      - key: MODEL_NAME
+        value: u2netp
