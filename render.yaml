@@ -10,3 +10,5 @@ services:
         sync: false
       - key: MODEL_NAME
         value: u2netp
+      - key: PYTHON_VERSION
+        value: 3.11.9
