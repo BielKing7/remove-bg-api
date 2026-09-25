@@ -14,7 +14,17 @@ API_KEY = os.environ.get("API_KEY", "troque-esta-chave")
 
 # u2netp é o modelo "leve" (~4-5MB) — necessário pro plano free do Render (512MB RAM)
 MODEL_NAME = os.environ.get("MODEL_NAME", "u2netp")
-_session = new_session(MODEL_NAME)
+
+# Carrega o modelo só na primeira requisição (não no início do programa),
+# pra não travar a abertura da porta no Render.
+_session = None
+
+
+def get_session():
+    global _session
+    if _session is None:
+        _session = new_session(MODEL_NAME)
+    return _session
 
 # Redimensiona imagens muito grandes antes de processar, pra não estourar
 # a memória do plano free (512MB). 1280px já é mais que suficiente pra
@@ -61,7 +71,7 @@ def remove_bg():
 
     # --- remove o fundo ---
     try:
-        output_image = remove(input_image, session=_session)
+        output_image = remove(input_image, session=get_session())
     except Exception as e:
         return jsonify({"error": f"Erro ao remover o fundo: {e}"}), 500
     finally:
